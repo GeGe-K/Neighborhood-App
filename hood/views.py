@@ -89,3 +89,17 @@ def profile(request,user_id):
     neighborhoods = Neighborhood.objects.all()
 
     return render(request,'profile.html',{'neighborhoods':neighborhoods,'businesses':businesses,'profile':profile,'form':form,'emergencies':emergencies})
+
+
+def add_biz(request):
+    user = User.objects.filter(id = request.user.id).first()
+    profile = UserProfile.objects.filter(user = user).first()
+    if request.method == 'POST':
+        business_form = AddBusinessForm(request.POST)
+        if business_form.is_valid():
+            business = Business(name = request.POST['name'],owner = user,business_neighborhood = profile.neighborhood,email=request.POST['email'])
+            business.save()
+        return redirect(reverse('profile',args=[user.id]))
+    else:
+        business_form = AddBusinessForm()
+    return render(request,'biz.html',{'business_form':business_form})
