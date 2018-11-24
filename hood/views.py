@@ -41,3 +41,30 @@ def index(request):
 def signout(request):
     logout(request)
     return redirect('login')
+
+
+def neighborhood(request,neighborhood_id):
+    if request.user.id == 1:
+        neighborhood = Neighborhood.objects.get(id = neighborhood_id)
+        members = UserProfile.objects.filter(neighborhood = neighborhood).all()
+        emergencies = EmergencyContacts.objects.filter(neighborhood_contact = neighborhood).all()
+        return render(request,'neighborhood.html',{'neighborhood':neighborhood,'members':members,'emergencies':emergencies})
+    else:
+        neighborhood = Neighborhood.objects.get(id = neighborhood_id)
+        user = UserProfile.objects.filter(user = request.user).first()
+        businesses = Business.objects.filter(business_neighborhood=neighborhood).all()
+        emergencies = EmergencyContacts.objects.filter(neighborhood_contact = neighborhood).all()
+        user.neighborhood = neighborhood
+        user.save()
+
+        if request.method == "POST":
+            form = PostForm(request.POST)
+            if form.is_valid():
+                post = Post(title=request.POST['title'],post_description=request.POST['post_description'],posted_by=request.user,post_hood=neighborhood,posted_on=datetime.datetime.now())
+                post.save()
+                return redirect(reverse('neighborhood',args=[neighborhood.id]))
+        else:
+            form = PostForm()
+
+        posts = Post.objects.filter(post_hood = neighborhood).all()
+        return render(request,'neighborhood.html',{'posts':posts,'form':form,'user':user,'businesses':businesses,'neighborhood':neighborhood,'emergencies':emergencies})
