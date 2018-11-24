@@ -11,8 +11,8 @@ import datetime
 
 # Create your views here.
 def index(request):
-    if request.user is None:
-        return redirect(reverse('signout'))
+    if not request.user.is_authenticated:
+        return redirect('signout')
     else:
         if request.user.id == 1:
             if request.method == 'POST':
