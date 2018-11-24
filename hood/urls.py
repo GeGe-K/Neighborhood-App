@@ -6,5 +6,6 @@ urlpatterns=[
     url(r'^signout/$',views.signout,name='signout'),
     url(r'^neighborhood/(\d+)',views.neighborhood,name='neighborhood'),
     url(r'^profile/(\d+)',views.profile,name='profile'),
+    url(r'^add_biz/',views.add_biz,name='add_biz'),
     
 ]
