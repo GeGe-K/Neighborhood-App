@@ -68,3 +68,24 @@ def neighborhood(request,neighborhood_id):
 
         posts = Post.objects.filter(post_hood = neighborhood).all()
         return render(request,'neighborhood.html',{'posts':posts,'form':form,'user':user,'businesses':businesses,'neighborhood':neighborhood,'emergencies':emergencies})
+
+
+def profile(request,user_id):
+    user = User.objects.get(id = user_id)
+    profile = UserProfile.objects.filter(user = user).first()
+    if request.method == 'POST':
+        form = UpdateProfileForm(request.POST,instance=profile)
+        if form.is_valid():
+            profile.first_name = request.POST['first_name']
+            profile.last_name = request.POST['last_name']
+            profile.location = request.POST['location']
+            profile.save()
+        return redirect(reverse('profile',args=[user.id]))
+    else:
+        form = UpdateProfileForm(instance=profile)
+
+    businesses = Business.objects.filter(owner = user).all()
+    emergencies = EmergencyContacts.objects.filter(neighborhood_contact = profile.neighborhood).all()
+    neighborhoods = Neighborhood.objects.all()
+
+    return render(request,'profile.html',{'neighborhoods':neighborhoods,'businesses':businesses,'profile':profile,'form':form,'emergencies':emergencies})
