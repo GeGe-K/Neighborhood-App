@@ -11,3 +11,8 @@ class UpdateProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         fields = ('first_name','last_name','location')
+
+class AddBusinessForm(ModelForm):
+    class Meta:
+        model = Business
+        fields = ('name','email','business_location')
