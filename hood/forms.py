@@ -16,3 +16,8 @@ class AddBusinessForm(ModelForm):
     class Meta:
         model = Business
         fields = ('name','email','business_location')
+
+class PostForm(ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title','post_description',)
