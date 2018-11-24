@@ -111,3 +111,15 @@ def change_neighborhood(request,neighborhood_id):
     profile.neighborhood = neighborhood
     profile.save()
     return redirect(reverse('neighborhood',args=[neighborhood.id]))
+
+
+def search(request):
+    try:
+        if 'business' in request.GET and request.GET['business']:
+            search_term = request.GET.get('business')
+            searched_business = Business.objects.get(name__icontains=search_term)
+            return render(request,'search.html',{'searched_business':searched_business})
+    except (ValueError,Business.DoesNotExist):
+        message = "Oops! We couldn't find the business you're looking for."
+        return render(request,'search.html',{'message':message})
+    return render(request,'search.html',{'message':message,'searched_business':searched_business})
