@@ -45,3 +45,28 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f'{self.user.username}'
+
+class Business(models.Model):
+    name = models.CharField(max_length=30)
+    owner = models.ForeignKey(User,on_delete=models.CASCADE)
+    business_location = models.CharField(max_length=30,blank=True)
+    business_neighborhood = models.ForeignKey('Neighborhood',on_delete=models.CASCADE)
+    email = models.EmailField()
+
+    def create_business(self):
+        self.save()
+
+    def delete_business(self):
+        self.delete()
+
+    @classmethod
+    def find_business(cls,business_id):
+        business = cls.objects.get(id=business_id)
+        return business
+
+    def update_business(self,name):
+        self.name = name
+        self.save()
+
+    def __str__(self):
+        return f'{self.name}'
